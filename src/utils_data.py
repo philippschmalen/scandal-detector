@@ -3,6 +3,7 @@ import logging
 from functools import wraps
 from prophet import Prophet
 from pytrends.request import TrendReq
+import streamlit as st
 
 
 def wrap_logging_transform_df(func):
@@ -96,13 +97,13 @@ def preprocessing(df: pd.DataFrame) -> pd.DataFrame:
     )
 
 
-def column_add_outlier(df: pd.DataFrame) -> pd.DataFrame:
+def add_column_outlier(df: pd.DataFrame) -> pd.DataFrame:
     """
     Creates outlier column for prophet forecast
     outlier: greater than yhat_upper, ignore lower than yhat_lower
     """
 
-    df["outlier"] = ((df["yhat_upper"] > df.y)).astype("uint8")
+    df["outlier"] = ((df.y > df["yhat_upper"])).astype("uint8")
 
     return df
 
@@ -111,32 +112,44 @@ def merge_forecast_and_history(m: Prophet, forecast: pd.DataFrame) -> pd.DataFra
     return forecast.merge(m.history, on="ds", how="left")
 
 
-def create_google_search_url(df: pd.DataFrame, geo: str) -> pd.DataFrame:
+def create_google_search_link(
+    df: pd.DataFrame, dict_domain_keyword: dict
+) -> pd.DataFrame:
     "Create google search url for a keyword and date + 7 days"
 
-    dict_geo = {
-        "US": "com",
-        "DE": "de",
-        "GLOBAL": "com",
-    }
-
-    df["google_search_url"] = (
-        f"https://www.google.{dict_geo[geo]}/search?q="
+    df["google_search_http"] = (
+        f"https://www.google.{dict_domain_keyword['domain']}/search?q="
         + df.keyword_google
         + "+after:"
         + df.date.astype(str)
         + "+before:"
-        + df.date_plus_7.astype(str)
+        + df.date_upperbound.astype(str)
+    )
+
+    df["label_google_link"] = (
+        '<a href="' + df["google_search_http"].astype(str) + '">' + "Google search</a>"
     )
 
     return df
 
 
-def get_google_search_url(
-    df: pd.DataFrame, detector_sensitivity=0.99, geo="US"
-) -> list:
-    "Detector outlier on google trends time series and create google search url"
+def add_column_error(df: pd.DataFrame) -> pd.DataFrame:
+    return df.assign(error=lambda x: x["y"] - x["yhat"])
 
+
+def add_column_circle(df: pd.DataFrame) -> pd.DataFrame:
+    "Degrees in circle for polar plot"
+    df["circle"] = pd.Series(range(len(df)), index=df.index) * 360 / len(df)
+    return df
+
+
+def get_df_pred(
+    df: pd.DataFrame,
+    detector_sensitivity: float,
+    date_uppderbound_days: int,
+    dict_domain_keyword: dict,
+) -> pd.DataFrame:
+    # PREDICTION pipeline: df --> m, forecast
     m = Prophet(
         interval_width=detector_sensitivity,
         weekly_seasonality=False,
@@ -146,28 +159,31 @@ def get_google_search_url(
     m.fit(df)
     forecast = m.predict(m.make_future_dataframe(periods=0))
 
+    # process forecast --> df_pred
     return (
         merge_forecast_and_history(m, forecast)
-        .pipe(column_add_outlier)
-        .query("outlier == 1")
+        .pipe(add_column_outlier)
         .assign(
-            date_plus_7=lambda x: x["date"] + pd.Timedelta(days=30),
+            date_upperbound=lambda x: x["date"]
+            + pd.Timedelta(days=date_uppderbound_days),
             keyword_google=lambda x: x["keyword"].apply(lambda s: "+".join(s.split())),
         )
-        .pipe(create_google_search_url, geo=geo)
-    ).google_search_url.to_list()[::-1]
+        .pipe(create_google_search_link, dict_domain_keyword)
+        .pipe(add_column_error)
+        .pipe(add_column_circle)
+    )
 
 
+@st.cache(allow_output_mutation=True)
 def get_google_trends_firm_scandal(
-    keyword_userinput: str, keyword_esg: str = "scandal", geo: str = "US"
+    keyword_userinput: str, dict_domain_keyword: dict
 ) -> pd.DataFrame:
-    keyword_searchtrends = keyword_userinput.strip() + f" {keyword_esg}"
-
-    if geo == "GLOBAL":
-        geo = ""
+    keyword_searchtrends = (
+        keyword_userinput.strip() + f" {dict_domain_keyword['keyword']}"
+    )
 
     pt = TrendReq()
-    pt.build_payload(kw_list=[keyword_searchtrends], geo=geo)
+    pt.build_payload(kw_list=[keyword_searchtrends], geo=dict_domain_keyword["gtrends"])
     df_raw = pt.interest_over_time()
 
     if len(df_raw) > 0:
