@@ -1,20 +1,16 @@
 import logging
 import streamlit as st
+from prophet import Prophet
+import pandas as pd
 from src.utils_data import get_google_trends_firm_scandal
+from src.utils_data import get_df_pred
+from src.utils_plot import plotly_timeline
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
-
-# ------------------------------------------
-# SANDBOX
-from prophet import Prophet
-import pandas as pd
-from src.utils_data import get_google_trends_firm_scandal
-from src.utils_data import get_df_pred
-from src.utils_plot import plotly_timeline
 
 # CONFIG
 detector_sensitivity = 0.99
