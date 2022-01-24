@@ -60,7 +60,7 @@ if st.button("Detect scandals"):
             )
 
             st.info(
-                f"Found {len(df_pred.query('outlier == 1'))} public scandal(s) within the last 5 years."
+                f"Found {len(df_pred.query('outlier == 1'))} major public scandal(s) within the last 5 years."
             )
 
             fig = plotly_timeline(df_pred, keyword_userinput, keep_topn_scandals)

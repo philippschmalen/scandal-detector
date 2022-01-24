@@ -30,14 +30,14 @@ def plotly_timeline(
             mode="markers+text",
             textposition="middle center",
             marker=dict(
-                color=df_pred.outlier.map({1: "#ff6692", 0: "rgba(171, 183, 183, 1)"}),
+                color=df_pred.outlier.map({1: "#ff9780", 0: "rgba(171, 183, 183, 1)"}),
                 size=df_pred.marker_size,  # .map({1: 20, 0: 5}),
             ),
         )
     )
-
-    prediction_color = "#0072B2"
-    error_color = "rgba(0, 114, 178, 0.2)"  # '#0072B2' with 0.2 opacity
+    color_discrete_sequence = ["#4d886d", "#f3dab9", "#9bcab8", "#829fa5", "#cfaea5"]
+    prediction_color = color_discrete_sequence[0]
+    error_color = "rgba(155, 202, 184,0.4)"  # '#0072B2' with 0.2 opacity
 
     # prediction
     # line
