@@ -1,3 +1,4 @@
+from lib2to3.pgen2.pgen import DFAState
 import pandas as pd
 import logging
 from functools import wraps
@@ -115,7 +116,7 @@ def merge_forecast_and_history(m: Prophet, forecast: pd.DataFrame) -> pd.DataFra
 def create_google_search_link(
     df: pd.DataFrame, dict_domain_keyword: dict
 ) -> pd.DataFrame:
-    "Create google search url for a keyword and date + 7 days"
+    "Create google search url for a keyword and date + upperbound days"
 
     df["google_search_http"] = (
         f"https://www.google.{dict_domain_keyword['domain']}/search?q="
@@ -191,3 +192,18 @@ def get_google_trends_firm_scandal(
     else:
         logging.info(f"No results found. get_google_trends_firm_scandal returns None.")
         return None
+
+
+def get_list_of_scandal_links(df):
+    return (
+        df.query("outlier == 1")
+        .loc[:, ["date", "error", "label_google_link"]]
+        .rename(
+            {
+                "date": "Date",
+                "error": "Scandal severity",
+                "label_google_link": "Link to Google",
+            },
+            axis=1,
+        )
+    ).sort_values(by="Scandal severity", ascending=False)

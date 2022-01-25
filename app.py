@@ -4,6 +4,7 @@ from prophet import Prophet
 import pandas as pd
 from src.utils_data import get_google_trends_firm_scandal
 from src.utils_data import get_df_pred
+from src.utils_data import get_list_of_scandal_links
 from src.utils_plot import plotly_timeline
 
 logging.basicConfig(
@@ -18,13 +19,18 @@ date_uppderbound_days = 30
 keep_topn_scandals = 3
 
 dict_geo = {
-    "US": {"domain": "com", "keyword": "scandal", "gtrends": "US"},
     "DE": {"domain": "de", "keyword": "Skandal", "gtrends": "DE"},
+    "US": {"domain": "com", "keyword": "scandal", "gtrends": "US"},
+    "FR": {"domain": "fr", "keyword": "scandale", "gtrends": "FR"},
     "GLOBAL": {"domain": "com", "keyword": "scandal", "gtrends": ""},
 }
 
+
 # SELECTIONS
-keyword_userinput = st.text_input(label="Enter a firm name:", value="apple")
+st.title("Scandal Detector")
+st.subheader("Search major scandals for publicly known companies")
+
+keyword_userinput = st.text_input(label="Enter a firm name:", value="deutsche bank")
 select_geo = st.selectbox(label="Select a country", options=dict_geo)
 
 # ------------------------------------------
@@ -62,6 +68,17 @@ if st.button("Detect scandals"):
             st.info(
                 f"Found {len(df_pred.query('outlier == 1'))} major public scandal(s) within the last 5 years."
             )
-
-            fig = plotly_timeline(df_pred, keyword_userinput, keep_topn_scandals)
+            st.subheader("Timeline on scandals over last 5 years")
+            fig = plotly_timeline(df_pred.copy(), keyword_userinput, keep_topn_scandals)
             st.plotly_chart(fig)
+
+            st.subheader("Scandals sorted by severity")
+
+            # write links as list
+            st.write(
+                get_list_of_scandal_links(df_pred).to_html(escape=False, index=False),
+                unsafe_allow_html=True,
+            )
+
+st.write("---")
+st.image("img/tsf_logo.png")
