@@ -128,7 +128,10 @@ def create_google_search_link(
     )
 
     df["label_google_link"] = (
-        '<a href="' + df["google_search_http"].astype(str) + '">' + "Google search</a>"
+        '<a href="'
+        + df["google_search_http"].astype(str)
+        + '" target="_blank" rel="noopener noreferrer">'
+        + "Google search</a>"
     )
 
     return df
@@ -190,7 +193,7 @@ def get_google_trends_firm_scandal(
     if len(df_raw) > 0:
         return df_raw.pipe(process_interest_over_time).pipe(preprocessing)
     else:
-        logging.info(f"No results found. get_google_trends_firm_scandal returns None.")
+        logging.info("No results found. get_google_trends_firm_scandal returns None.")
         return None
 
 

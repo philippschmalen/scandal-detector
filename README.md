@@ -38,8 +38,7 @@ The data pipeline includes the following steps:
 
 ## Extensions
 
-- [ ] check that detected scandals do not overlap within a period of `date_uppderbound_days`
-- [ ] install pre-commit
+- [ ] check that detected scandals do not overlap within a period of `date_uppderbound_days
 - [ ] create `config.yaml`
 - [ ] load config with `hydra`
 

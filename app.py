@@ -24,7 +24,7 @@ dict_geo = {
 
 
 st.title("Scandal Detector")
-st.subheader("Identify major public scandals of a company")
+st.subheader("Identify public scandals of a well-known company")
 
 # SELECTIONS
 keyword_userinput = st.text_input(label="Enter a firm name:", value="deutsche bank")
@@ -62,17 +62,24 @@ if st.button("Detect scandals"):
 
             # link list
             st.write(
-                get_list_of_scandal_links(df_pred).to_html(escape=False, index=False),
+                get_list_of_scandal_links(df_pred).to_html(escape=False, index=False)
+                + "<br>",
                 unsafe_allow_html=True,
             )
 
 
-with st.expander("See how it works"):
+with st.expander("How it works"):
     """
-    The scandal detector uses search interest from Google trends and applies a time-series model to identify public scandals.
+    The scandal detector uses search interest from Google trends and applies a time-series model to identify public scandals. If search interest lies far outside of what is expected (=model's prediction), we define this as a scandal. *Scandal severity* is defined as the difference between the actual search interest and the predicted search interest. The larger the difference to what we expect, the more public attention the scandal received.
+
+    Here is the data flow:
     """
     st.image("img/data-flow.png")
     """
+    **Note**: The process works for well-known public entities. It requires a substantial number of searches to be visible in Google Trends data.
+
+    ---
+
     You can access the source code on https://github.com/philippschmalen/scandal-detector. Feel free to contribute!
 
     If you have made it so far, I would love ot hear from you. Drop me a line on [linkedin](https://www.linkedin.com/in/philippschmalen/).
