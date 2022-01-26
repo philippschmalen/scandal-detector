@@ -86,7 +86,4 @@ with st.expander("How it works"):
     If you have made it so far, I would love ot hear from you. Drop me a line on [linkedin](https://www.linkedin.com/in/philippschmalen/).
     """
 
-st.write("---")
-st.image("img/tsf_logo.png")
-
 st.markdown(hide_streamlit_style(), unsafe_allow_html=True)
