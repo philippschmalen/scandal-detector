@@ -210,3 +210,12 @@ def get_list_of_scandal_links(df):
             axis=1,
         )
     ).sort_values(by="Scandal severity", ascending=False)
+
+
+def hide_streamlit_style() -> str:
+    return """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    </style>
+    """

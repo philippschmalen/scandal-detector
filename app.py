@@ -3,6 +3,7 @@ import streamlit as st
 from src.utils_data import get_google_trends_firm_scandal
 from src.utils_data import get_df_pred
 from src.utils_data import get_list_of_scandal_links
+from src.utils_data import hide_streamlit_style
 from src.utils_plot import plotly_timeline
 
 logging.basicConfig(
@@ -87,3 +88,5 @@ with st.expander("How it works"):
 
 st.write("---")
 st.image("img/tsf_logo.png")
+
+st.markdown(hide_streamlit_style(), unsafe_allow_html=True)
