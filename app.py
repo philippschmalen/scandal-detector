@@ -32,8 +32,8 @@ keyword_userinput = st.text_input(label="Enter a firm name:", value="deutsche ba
 select_geo = st.selectbox(label="Select a country", options=dict_geo)
 
 # DATA PIPELINE
-if st.button("Detect scandals"):
-    with st.spinner("Fetching data..."):
+if st.button("Detect scandals ↓"):
+    with st.spinner("Fetching data... ↓↓↓"):
         # fetch google trends
         df = get_google_trends_firm_scandal(
             keyword_userinput, dict_domain_keyword=dict_geo[select_geo]
