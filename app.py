@@ -24,7 +24,7 @@ dict_geo = {
 
 
 st.title("Scandal Detector")
-st.subheader("Search major scandals for publicly known companies")
+st.subheader("Identify major public scandals of a company")
 
 # SELECTIONS
 keyword_userinput = st.text_input(label="Enter a firm name:", value="deutsche bank")
