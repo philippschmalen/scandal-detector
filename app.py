@@ -31,10 +31,10 @@ st.subheader("Identify public scandals of a well-known company")
 keyword_userinput = st.text_input(label="Enter a firm name:", value="deutsche bank")
 select_geo = st.selectbox(label="Select a country", options=dict_geo)
 
-# DATA PIPELINE
+
 if st.button("Detect scandals ↓"):
     with st.spinner("Fetching data... ↓↓↓"):
-        # fetch google trends
+        # get data
         df = get_google_trends_firm_scandal(
             keyword_userinput, dict_domain_keyword=dict_geo[select_geo]
         )
@@ -43,6 +43,7 @@ if st.button("Detect scandals ↓"):
             st.info(f"No public scandals found for {keyword_userinput}.")
 
         else:
+            # predict
             df_pred = get_df_pred(
                 df,
                 detector_sensitivity,
@@ -54,17 +55,16 @@ if st.button("Detect scandals ↓"):
                 f"Found {len(df_pred.query('outlier == 1'))} major public scandal(s) within the last 5 years."
             )
 
-            # PLOT
+            # plot
             st.subheader("Timeline on scandals over last 5 years")
             fig = plotly_timeline(df_pred.copy(), keyword_userinput, keep_topn_scandals)
             st.plotly_chart(fig)
 
             st.subheader("Scandals sorted by severity")
 
-            # link list
+            # list
             st.write(
-                get_list_of_scandal_links(df_pred).to_html(escape=False, index=False)
-                + "<br>",
+                get_list_of_scandal_links(df_pred).to_html() + "<br>",
                 unsafe_allow_html=True,
             )
 

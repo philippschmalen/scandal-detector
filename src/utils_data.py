@@ -201,6 +201,8 @@ def get_list_of_scandal_links(df):
     return (
         df.query("outlier == 1")
         .loc[:, ["date", "error", "label_google_link"]]
+        # error as int, date format as yyyy-mm-dd
+        .astype({"error": "int32", "date": "str"})
         .rename(
             {
                 "date": "Date",
@@ -209,7 +211,16 @@ def get_list_of_scandal_links(df):
             },
             axis=1,
         )
-    ).sort_values(by="Scandal severity", ascending=False)
+        .sort_values(by="Scandal severity", ascending=False)
+        .pipe(style_df)
+    )
+
+
+def style_df(df):
+    styler = df.style
+    styler.background_gradient(vmin=20, vmax=100, cmap="OrRd")
+    styler.hide_index()
+    return styler
 
 
 def hide_streamlit_style() -> str:
