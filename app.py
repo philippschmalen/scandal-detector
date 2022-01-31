@@ -71,7 +71,7 @@ if st.button("Detect scandals ↓"):
 
 with st.expander("How it works"):
     """
-    The scandal detector uses search interest from Google trends and applies a time-series model to identify public scandals. If search interest lies far outside of what is expected (=model's prediction), we define this as a scandal. *Scandal severity* is defined as the difference between the actual search interest and the predicted search interest. The larger the difference to what we expect, the more public attention the scandal received.
+    The scandal detector uses search interest from Google trends and applies a time-series model to identify public scandals. It searches for "keyword + scandal" in the selected language and Google domain, such as google.de or google.com. If search interest lies far outside of what is expected (=model's prediction), we define this as a scandal. *Scandal severity* is defined as the difference between the actual search interest and the predicted search interest. The larger the difference to what we expect, the more public attention the scandal received.
 
     Here is the data flow:
     """
