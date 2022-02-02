@@ -20,6 +20,7 @@ dict_geo = {
     "DE": {"domain": "de", "keyword": "Skandal", "gtrends": "DE"},
     "US": {"domain": "com", "keyword": "scandal", "gtrends": "US"},
     "FR": {"domain": "fr", "keyword": "scandale", "gtrends": "FR"},
+    "FI": {"domain": "fi", "keyword": "skandaali", "gtrends": "FI"},
     "GLOBAL": {"domain": "com", "keyword": "scandal", "gtrends": ""},
 }
 
@@ -77,6 +78,8 @@ with st.expander("How it works"):
     """
     st.image("img/data-flow.png")
     """
+    The app runs on `streamlit`. When you click `detect scandals` it launches `pytrends` to get research interest of the given keyword plus the word 'scandal' in the selected language. The raw data gets processed within `pandas` to be ready for `facebook prophet` and generate Google search links in HTML. The time-series model trains on the whole data and predicts the search interest. This prediction is the expected search interest. If the actual search interest of "keyword+scandal" lies far from what is expected, this is defined as a public scandal. Lastly,`plotly` visualizes the timeline including actual search interest, predicted search interest and scandals.
+
     **Note**: The process works for well-known public entities. It requires a substantial number of searches to be visible in Google Trends data.
 
     ---
