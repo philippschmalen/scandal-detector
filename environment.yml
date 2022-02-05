@@ -1,8 +1,0 @@
-name: esg_codebase
-dependencies:
-  - python=3.8.10
-  - streamlit
-  - pandas
-  - plotly
-  - prophet
-  - pytrends
