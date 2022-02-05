@@ -1,0 +1,12 @@
+name: esg_codebase
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8.10
+  - pip=21.1.1
+  - streamlit
+  - pandas
+  - plotly
+  - prophet
+  - pytrends

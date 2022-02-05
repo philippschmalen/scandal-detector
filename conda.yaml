@@ -29,5 +29,3 @@ dependencies:
   - pip:
       - yahooquery==2.2.15
       - pytickersymbols==1.8.45
-      - google==3.0.0
-      - streamlit_plotly_events==0.0.6
