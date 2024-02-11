@@ -177,7 +177,7 @@ def get_df_pred(
     )
 
 
-@st.cache(allow_output_mutation=True)
+@st.cache_data
 def get_google_trends_firm_scandal(
     keyword_userinput: str, dict_domain_keyword: dict
 ) -> pd.DataFrame:
@@ -218,7 +218,7 @@ def get_list_of_scandal_links(df):
 def style_df(df):
     styler = df.style
     styler.background_gradient(vmin=20, vmax=100, cmap="OrRd")
-    styler.hide_index()
+    styler.hide(axis="index")
     return styler
 
 
